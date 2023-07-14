@@ -32,6 +32,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         tFeels: weather.tempFeelsLike!.celsius!.floor().toString(),
         sunrise: DateFormat('hh:mm').format(weather.sunrise!),
         sunset: DateFormat('hh:mm').format(weather.sunset!),
+        icon: weather.weatherIcon!,
+        cond: weather.weatherConditionCode!,
       );
     } on SocketException {
       throw ServerFailure('');

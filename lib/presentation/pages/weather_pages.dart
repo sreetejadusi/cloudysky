@@ -7,22 +7,19 @@ import 'package:cloudysky/presentation/bloc/weather_event.dart';
 import 'package:cloudysky/presentation/bloc/weather_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:quotes_widget/quotes_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WeatherPage extends StatelessWidget {
   const WeatherPage({Key? key}) : super(key: key);
 
-  void geoLocatorLocation(BuildContext context) {
+  Future<void> getPrefs(BuildContext context) async {
     try {
-      Geolocator.getCurrentPosition().then((value) {
-        placemarkFromCoordinates(value.latitude, value.longitude).then((value) {
-          context
-              .read<WeatherBloc>()
-              .add(OnCityChanged(value.first.locality ?? 'Visakhapatnam'));
-        });
+      SharedPreferences.getInstance().then((value) {
+        context
+            .read<WeatherBloc>()
+            .add(OnCityChanged(value.getString('place') ?? ''));
       });
     } catch (e) {
       throw ServerFailure('No Internet');
@@ -32,26 +29,39 @@ class WeatherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController textEditingController = TextEditingController();
-    geoLocatorLocation(context);
+    getPrefs(context);
+    ThemeBuilder themeData = ColorTheme.cloudyOne;
     return Scaffold(
       body: BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
-        ThemeBuilder themeData = ColorTheme.cloudyOne;
-        String icon = 'cloud';
         if (state is WeatherHasData) {
-          if (state.result.weather.contains('sunny')) {
-            themeData = ColorTheme.sunnyOne;
-            icon = 'sun';
-          } else if (state.result.weather.contains('cloud')) {
-            themeData = ColorTheme.cloudyOne;
-            icon = 'cloud';
-          } else if (state.result.weather.contains('rain')) {
-            themeData = ColorTheme.rainyTwo;
-            icon = 'rain';
-          } else {
-            themeData = ColorTheme.snowyOne;
-            icon = 'cloud';
+          switch (state.result.cond.toString()[0]) {
+            case '2':
+              themeData = ColorTheme.rainyTwo;
+              break;
+            case '3':
+              themeData = ColorTheme.rainyThree;
+              break;
+            case '5':
+              themeData = ColorTheme.rainyOne;
+              break;
+            case '6':
+              themeData = ColorTheme.snowyTwo;
+              break;
+            case '7':
+              themeData = ColorTheme.cloudyOne;
+              break;
+            case '8':
+              if (state.result.cond.toString() == '800') {
+                themeData = ColorTheme.sunnyOne;
+              } else {
+                themeData = ColorTheme.cloudyTwo;
+              }
+              break;
+            default:
+              themeData = ColorTheme.cloudyOne;
           }
         }
+
         return state is WeatherLoading
             ? const Center(child: CircularProgressIndicator())
             : state is WeatherHasData
@@ -90,19 +100,21 @@ class WeatherPage extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SvgPicture.asset(
-                                    'assets/$icon.svg',
-                                    height: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium!
-                                        .fontSize,
-                                    // colorFilter: ColorFilter.mode(
-                                    //     Colors.white, BlendMode.clear),
+                                  // SvgPicture.asset(
+                                  //   'assets/$icon.svg',
+                                  //   height: Theme.of(context)
+                                  //       .textTheme
+                                  //       .displayMedium!
+                                  //       .fontSize,
+                                  //   // colorFilter: ColorFilter.mode(
+                                  //   //     Colors.white, BlendMode.clear),
+                                  //   color: themeData.secondary,
+                                  // ),
+                                  Image.network(
+                                    'https://openweathermap.org/img/wn/${state.result.icon}@2x.png',
                                     color: themeData.secondary,
                                   ),
-                                  SizedBox(
-                                    width: 12,
-                                  ),
+
                                   Text(
                                     '${state.result.tempC}°C',
                                     style: TextStyle(
@@ -115,7 +127,8 @@ class WeatherPage extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(
-                                height: 18,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.008,
                               ),
                               Text(
                                 state.result.weather,
@@ -128,7 +141,8 @@ class WeatherPage extends StatelessWidget {
                                     color: themeData.secondary),
                               ),
                               SizedBox(
-                                height: 8,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.004,
                               ),
                               TextButton(
                                 style: ButtonStyle(
@@ -167,21 +181,22 @@ class WeatherPage extends StatelessWidget {
                                       actions: [
                                         TextButton(
                                             onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Cancel')),
+                                        TextButton(
+                                            onPressed: () {
                                               if (textEditingController
                                                   .text.isNotEmpty) {
                                                 context.read<WeatherBloc>().add(
                                                     OnCityChanged(
                                                         textEditingController
-                                                            .text));
+                                                            .text
+                                                            .trim()));
                                               }
                                               Navigator.of(context).pop();
                                             },
                                             child: Text('Submit')),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('Cancel'))
                                       ],
                                     ),
                                   );
@@ -199,7 +214,8 @@ class WeatherPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                height: 8,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.004,
                               ),
                               Text(
                                 state.result.date,
@@ -259,7 +275,8 @@ class WeatherPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                height: 8,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.004,
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -321,8 +338,7 @@ class WeatherPage extends StatelessWidget {
                         children: [
                           Image.asset('assets/logo.png'),
                           Center(
-                              child: Text(
-                                  'Uh oh... I\'m unable to look at the sky!')),
+                              child: Text('Enter city name to fetch weather')),
                           SizedBox(
                             height: 12,
                           ),
@@ -357,7 +373,7 @@ class WeatherPage extends StatelessWidget {
                                                 BorderRadius.circular(12)))),
                                 onPressed: () {
                                   context.read<WeatherBloc>().add(OnCityChanged(
-                                      textEditingController.text));
+                                      textEditingController.text.trim()));
                                 },
                                 child: Text('Tell me the Weather')),
                           )

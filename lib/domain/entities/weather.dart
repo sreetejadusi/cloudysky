@@ -12,20 +12,38 @@ class Weather extends Equatable {
   final String tFeels;
   final String sunrise;
   final String sunset;
-  const Weather(
-      {required this.cityName,
-      required this.date,
-      required this.weather,
-      required this.weatherDesc,
-      required this.tempC,
-      required this.tempF,
-      required this.tMin,
-      required this.tMax,
-      required this.tFeels,
-      required this.sunrise,
-      required this.sunset});
+  final String icon;
+  final int cond;
+  const Weather({
+    required this.cityName,
+    required this.date,
+    required this.weather,
+    required this.weatherDesc,
+    required this.tempC,
+    required this.tempF,
+    required this.tMin,
+    required this.tMax,
+    required this.tFeels,
+    required this.sunrise,
+    required this.sunset,
+    required this.icon,
+    required this.cond,
+  });
   @override
   // TODO: implement props
-  List<Object?> get props =>
-      [cityName, date, weather,weatherDesc, tempC,tempF, tMin, tMax, tFeels, sunrise, sunset];
+  List<Object?> get props => [
+        cityName,
+        date,
+        weather,
+        weatherDesc,
+        tempC,
+        tempF,
+        tMin,
+        tMax,
+        tFeels,
+        sunrise,
+        sunset,
+        icon,
+        cond,
+      ];
 }

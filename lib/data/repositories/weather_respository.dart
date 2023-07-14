@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloudysky/data/datasources/remote_data_source.dart';
 import 'package:cloudysky/data/failure.dart';
 import 'package:cloudysky/domain/entities/weather.dart';

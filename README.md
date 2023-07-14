@@ -1,16 +1,9 @@
 # cloudysky
 
-A new Flutter project.
+<img width="603" alt="image" src="https://github.com/sreetejadusi/cloudysky/assets/67823025/64c2dcfb-de61-4c95-842d-55385c68fec9">
 
-## Getting Started
+CloudySky is a simple weather application built using the popular cross-platform framework- Flutter implementing Clean Architecture and Test-Driven Development.
 
-This project is a starting point for a Flutter application.
+<img width="405" alt="image" src="https://github.com/sreetejadusi/cloudysky/assets/67823025/5e481858-ea97-4b55-813a-e48d66ca6387">
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Download it on Google Play: https://play.google.com/store/apps/details?id=com.sreetejadusi.cloudysky

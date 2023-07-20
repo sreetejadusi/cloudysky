@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:cloudysky/data/constants.dart';
-import 'package:cloudysky/data/failure.dart';
 import 'package:cloudysky/presentation/bloc/weather_bloc.dart';
 import 'package:cloudysky/presentation/bloc/weather_event.dart';
 import 'package:cloudysky/presentation/bloc/weather_state.dart';
@@ -9,28 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quotes_widget/quotes_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 class WeatherPage extends StatelessWidget {
   const WeatherPage({Key? key}) : super(key: key);
-
-  Future<void> getPrefs(BuildContext context) async {
-    try {
-      SharedPreferences.getInstance().then((value) {
-        context
-            .read<WeatherBloc>()
-            .add(OnCityChanged(value.getString('place') ?? ''));
-      });
-    } catch (e) {
-      throw ServerFailure('No Internet');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     TextEditingController textEditingController = TextEditingController();
-    getPrefs(context);
     ThemeBuilder themeData = ColorTheme.cloudyOne;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
         if (state is WeatherHasData) {
@@ -80,15 +66,18 @@ class WeatherPage extends StatelessWidget {
                       children: [
                         Spacer(),
                         Container(
-                            margin: EdgeInsets.all(48),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: width * 0.1,
+                                vertical: height * 0.05),
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(24)),
                             child: Image.asset('assets/logo.png')),
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          padding: EdgeInsets.symmetric(vertical: 12),
+                          width: width * 0.8,
+                          height: height * 0.425,
+                          // padding:
+                          //     EdgeInsets.symmetric(vertical: height * 0.03),
                           decoration: BoxDecoration(
                             color: themeData.primary,
                             borderRadius: BorderRadius.circular(24),
@@ -96,7 +85,6 @@ class WeatherPage extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Spacer(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -116,7 +104,7 @@ class WeatherPage extends StatelessWidget {
                                   ),
 
                                   Text(
-                                    '${state.result.tempC}°C',
+                                    '${state.result.temp}°C',
                                     style: TextStyle(
                                         fontSize: Theme.of(context)
                                             .textTheme
@@ -127,8 +115,7 @@ class WeatherPage extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.008,
+                                height: height * 0.01,
                               ),
                               Text(
                                 state.result.weather,
@@ -141,8 +128,7 @@ class WeatherPage extends StatelessWidget {
                                     color: themeData.secondary),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.004,
+                                height: height * 0.01,
                               ),
                               TextButton(
                                 style: ButtonStyle(
@@ -214,8 +200,7 @@ class WeatherPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.004,
+                                height: height * 0.006,
                               ),
                               Text(
                                 state.result.date,
@@ -226,7 +211,9 @@ class WeatherPage extends StatelessWidget {
                                         .fontSize,
                                     color: themeData.secondary),
                               ),
-                              Spacer(),
+                              SizedBox(
+                                height: height * 0.03,
+                              ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 30.0),
@@ -275,8 +262,7 @@ class WeatherPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.004,
+                                height: height * 0.006,
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -311,6 +297,9 @@ class WeatherPage extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              SizedBox(
+                                height: height * 0.008,
+                              ),
                             ],
                           ),
                         ),
@@ -318,8 +307,8 @@ class WeatherPage extends StatelessWidget {
                           height: 64,
                         ),
                         QuotesWidget(
-                            height: MediaQuery.of(context).size.height * 0.12,
-                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: height * 0.12,
+                            width: width * 0.9,
                             quoteFontSize: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -332,54 +321,52 @@ class WeatherPage extends StatelessWidget {
                       ],
                     ),
                   )
-                : state is WeatherError
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/logo.png'),
-                          Center(
-                              child: Text('Enter city name to fetch weather')),
-                          SizedBox(
-                            height: 12,
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/logo.png'),
+                      Center(child: Text('Enter city name to fetch weather')),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 12),
+                        margin: EdgeInsets.symmetric(horizontal: 24),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: themeData.secondary,
                           ),
-                          Container(
-                            padding: EdgeInsets.only(left: 12),
-                            margin: EdgeInsets.symmetric(horizontal: 24),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: themeData.secondary,
-                              ),
-                            ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Look at the city of...',
-                                border: InputBorder.none,
-                              ),
-                              controller: textEditingController,
-                            ),
+                        ),
+                        child: TextField(
+                          keyboardType: TextInputType.streetAddress,
+                          decoration: InputDecoration(
+                            hintText: 'Look at the city of...',
+                            border: InputBorder.none,
                           ),
-                          Container(
-                            width: double.infinity,
-                            margin: EdgeInsets.symmetric(horizontal: 24),
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(
-                                      Color(0xFF009AFF),
-                                    ),
-                                    shape: MaterialStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12)))),
-                                onPressed: () {
-                                  context.read<WeatherBloc>().add(OnCityChanged(
-                                      textEditingController.text.trim()));
-                                },
-                                child: Text('Tell me the Weather')),
-                          )
-                        ],
+                          controller: textEditingController,
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(horizontal: 24),
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                  Color(0xFF009AFF),
+                                ),
+                                shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)))),
+                            onPressed: () {
+                              context.read<WeatherBloc>().add(OnCityChanged(
+                                  textEditingController.text.trim()));
+                            },
+                            child: Text('Tell me the Weather')),
                       )
-                    : SizedBox();
+                    ],
+                  );
       }),
     );
   }

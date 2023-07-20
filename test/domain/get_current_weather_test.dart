@@ -24,6 +24,9 @@ void main() {
     tFeels: '13.4 Celsius',
     sunrise: '2020-07-13 04:43:53.000',
     sunset: '2020-07-13 21:47:15.000',
+    weatherDesc: 'Clouds',
+    icon: 'icon',
+    cond: 0,
   );
   const String tCityName = 'Visakhapatnam';
   test('should get weather details from repository', () async {

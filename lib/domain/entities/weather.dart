@@ -5,8 +5,8 @@ class Weather extends Equatable {
   final String date;
   final String weather;
   final String weatherDesc;
-  final String tempC;
-  final String tempF;
+  final String temp;
+
   final String tMin;
   final String tMax;
   final String tFeels;
@@ -19,8 +19,7 @@ class Weather extends Equatable {
     required this.date,
     required this.weather,
     required this.weatherDesc,
-    required this.tempC,
-    required this.tempF,
+    required this.temp,
     required this.tMin,
     required this.tMax,
     required this.tFeels,
@@ -36,8 +35,7 @@ class Weather extends Equatable {
         date,
         weather,
         weatherDesc,
-        tempC,
-        tempF,
+        temp,
         tMin,
         tMax,
         tFeels,

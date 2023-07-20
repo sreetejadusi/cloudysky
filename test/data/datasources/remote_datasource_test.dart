@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:cloudysky/data/datasources/remote_data_source.dart';
 import 'package:cloudysky/data/models/weather_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -21,6 +19,9 @@ void main() {
     tFeels: '13.4 Celsius',
     sunrise: '2020-07-13 04:43:53.000',
     sunset: '2020-07-13 21:47:15.000',
+    weatherDesc: 'Clouds',
+    icon: 'icon',
+    cond: 0,
   );
   setUp(() {
     dataSource = TestRemoteDataSource();

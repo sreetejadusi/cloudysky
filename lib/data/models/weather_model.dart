@@ -6,8 +6,8 @@ class WeatherModel extends Equatable {
   final String date;
   final String weather;
   final String weatherDesc;
-  final String tempC;
-  final String tempF;
+  final String temp;
+
   final String tMin;
   final String tMax;
   final String tFeels;
@@ -20,8 +20,7 @@ class WeatherModel extends Equatable {
     required this.date,
     required this.weather,
     required this.weatherDesc,
-    required this.tempC,
-    required this.tempF,
+    required this.temp,
     required this.tMin,
     required this.tMax,
     required this.tFeels,
@@ -38,8 +37,7 @@ class WeatherModel extends Equatable {
         date,
         weather,
         weatherDesc,
-        tempC,
-        tempF,
+        temp,
         tMin,
         tMax,
         tFeels,
@@ -55,8 +53,7 @@ class WeatherModel extends Equatable {
       date: date,
       weather: weather,
       weatherDesc: weatherDesc,
-      tempC: tempC,
-      tempF: tempF,
+      temp: temp,
       tMin: tMin,
       tMax: tMax,
       tFeels: tFeels,
@@ -73,8 +70,7 @@ class WeatherModel extends Equatable {
       date: jsonMap['date'],
       weather: jsonMap['weather'],
       weatherDesc: jsonMap['weather'],
-      tempC: jsonMap['temp'],
-      tempF: jsonMap['temp'],
+      temp: jsonMap['temp'],
       tMin: jsonMap['tMin'],
       tMax: jsonMap['tMax'],
       tFeels: jsonMap['tFeels'],
@@ -91,8 +87,7 @@ class WeatherModel extends Equatable {
       "date": date,
       "weather": weather,
       "weatheDesc": weather,
-      "tempC": tempC,
-      "tempF": tempF,
+      "tempC": temp,
       "tMin": tMin,
       "tMax": tMax,
       "tFeels": tFeels,
